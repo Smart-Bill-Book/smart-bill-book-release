@@ -76,7 +76,8 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
             artifacts: "release-repo/app-release.apk"
-            tag: v0.0.${{ github.run_number }}
+            tag: v0.0.1
+            token: ${{secrets.WORKFLOW_RELEASE_TOKEN}}
             commit: main
             replacesArtifacts: false
             allowUpdates: true

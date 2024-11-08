@@ -28,9 +28,6 @@ jobs:
             flutter-version: 3.24.3
             working-directory: private-repo
 
-      - name: List files in current directory
-        run: ls -R
-
       - name: Set up Java
         uses: actions/setup-java@v2
         with:
@@ -76,7 +73,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
             artifacts: "release-repo/app-release.apk"
-            tag: v0.0.1
+            tag: v0.0.${{ github.run_number }}
             token: ${{secrets.WORKFLOW_RELEASE_TOKEN}}
             commit: main
             replacesArtifacts: false
@@ -84,11 +81,45 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.WORKFLOW_RELEASE_TOKEN }}
 
-      # Step 8: Upload the APK as a release asset
-      - name: Upload APK to Release
-        uses: actions/upload-release-asset@v1
+      - name: Build Flutter EXE
+        run: flutter build windows --release --dart-define-from-file flavors/production.json
+        working-directory: private-repo
+
+      - name: Archive Artifacts
+        uses: thedoctor0/zip-release@master
         with:
-          upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: release-repo/app-release.apk
-          asset_name: app-release.apk
-          asset_content_type: application/vnd.android.package-archive
+            type: "zip"
+            filename: Smart-Store-Billing-Software-windows.zip
+            directory: private-repo/build/windows/x64/runner/Release
+
+      - name: Copy Windows Build Zip to release repository
+        run: cp private-repo/build/windows/x64/runner/Release/Smart-Store-Billing-Software-windows.zip release-repo/
+
+      - name: Push Windows to releases
+        uses: ncipollo/release-action@v1
+        with:
+            artifacts: "release-repo/Smart-Store-Billing-Software-windows.zip"
+            tag: v0.0.${{ github.run_number }}
+            token: ${{secrets.TOKEN}}
+            commit: main
+            replacesArtifacts: false
+            allowUpdates: true
+
+      - name: Compile .ISS to .EXE Installer
+        uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
+        with:
+            path: private-repo/exe_generator/smart-store.iss
+            options: /O+
+
+      - name: Copy Windows Build Zip to release repository
+        run: cp private-repo/exe_generator/Output/billing.exe release-repo/
+
+      - name: Push Windows EXE to releases
+        uses: ncipollo/release-action@v1
+        with:
+            artifacts: "release-repo/billing.exe"
+            tag: v0.0.${{ github.run_number }}
+            token: ${{secrets.TOKEN}}
+            commit: main
+            replacesArtifacts: false
+            allowUpdates: true

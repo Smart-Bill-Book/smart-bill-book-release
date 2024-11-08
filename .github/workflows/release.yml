@@ -86,10 +86,11 @@ jobs:
         with:
             artifacts: "release-repo/app-release.apk"
             tag: v0.0.${{ github.run_number }}
-            token: ${{secrets.TOKEN}}
             commit: main
             replacesArtifacts: false
             allowUpdates: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
       # Step 8: Upload the APK as a release asset
       - name: Upload APK to Release

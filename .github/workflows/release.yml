@@ -15,7 +15,7 @@ jobs:
       - name: Check out private repository
         uses: actions/checkout@v3
         with:
-          repository: ${{ secrets.PRIVATE_REPO_URL }}
+          repository: Smart-Bill-Book/smart-bill-book
           ref: main
           token: ${{ secrets.GITHUB_TOKEN }}
           path: private-repo
@@ -26,6 +26,7 @@ jobs:
         with:
             channel: stable
             flutter-version: 3.24.3
+            working-directory: private-repo
 
       - name: List files in current directory
         run: ls -R
@@ -37,7 +38,7 @@ jobs:
         working-directory: private-repo
 
       # Step 3.5: Running Build Runner
-      - name: Install dependencies
+      - name: Dart Build Runner
         run: dart pub run build_runner build --delete-conflicting-outputs
         working-directory: private-repo
 

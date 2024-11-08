@@ -51,35 +51,35 @@ jobs:
         run: dart pub run build_runner build --delete-conflicting-outputs
         working-directory: private-repo
 
-      # Step 4: Build APK and/or iOS artifacts
-      - name: Build Flutter APK
-        run: flutter build apk --release --dart-define-from-file flavors/smart_store/production.json
-        working-directory: private-repo
+    #   # Step 4: Build APK and/or iOS artifacts
+    #   - name: Build Flutter APK
+    #     run: flutter build apk --release --dart-define-from-file flavors/smart_store/production.json
+    #     working-directory: private-repo
 
-      # Step 5: Check out the release repository
-      - name: Check out release repository
-        uses: actions/checkout@v3
-        with:
-          repository: Smart-Bill-Book/smart-bill-book-release
-          token: ${{ secrets.RELEASE_TOKEN }}
-          path: release-repo
+    #   # Step 5: Check out the release repository
+    #   - name: Check out release repository
+    #     uses: actions/checkout@v3
+    #     with:
+    #       repository: Smart-Bill-Book/smart-bill-book-release
+    #       token: ${{ secrets.RELEASE_TOKEN }}
+    #       path: release-repo
 
-      # Step 6: Copy build artifacts to release repository
-      - name: Copy APK to release repository
-        run: cp private-repo/build/app/outputs/flutter-apk/app-release.apk release-repo/
+    #   # Step 6: Copy build artifacts to release repository
+    #   - name: Copy APK to release repository
+    #     run: cp private-repo/build/app/outputs/flutter-apk/app-release.apk release-repo/
 
-      # Step 7: Create a new release in the release repository
-      - name: Push APK to releases
-        uses: ncipollo/release-action@v1
-        with:
-            artifacts: "release-repo/app-release.apk"
-            tag: v0.0.${{ github.run_number }}
-            token: ${{secrets.WORKFLOW_RELEASE_TOKEN}}
-            commit: main
-            replacesArtifacts: false
-            allowUpdates: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.WORKFLOW_RELEASE_TOKEN }}
+    #   # Step 7: Create a new release in the release repository
+    #   - name: Push APK to releases
+    #     uses: ncipollo/release-action@v1
+    #     with:
+    #         artifacts: "release-repo/app-release.apk"
+    #         tag: v0.0.${{ github.run_number }}
+    #         token: ${{secrets.WORKFLOW_RELEASE_TOKEN}}
+    #         commit: main
+    #         replacesArtifacts: false
+    #         allowUpdates: true
+    #     env:
+    #       GITHUB_TOKEN: ${{ secrets.WORKFLOW_RELEASE_TOKEN }}
 
       - name: Build Flutter EXE
         run: flutter build windows --release --dart-define-from-file flavors/smart_store/production.json
@@ -95,16 +95,6 @@ jobs:
       - name: Copy Windows Build Zip to release repository
         run: cp private-repo/build/windows/x64/runner/Release/Smart-Store-Billing-Software-windows.zip release-repo/
 
-      - name: Push Windows to releases
-        uses: ncipollo/release-action@v1
-        with:
-            artifacts: "release-repo/Smart-Store-Billing-Software-windows.zip"
-            tag: v0.0.${{ github.run_number }}
-            token: ${{secrets.TOKEN}}
-            commit: main
-            replacesArtifacts: false
-            allowUpdates: true
-
       - name: Compile .ISS to .EXE Installer
         uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
         with:
@@ -119,7 +109,9 @@ jobs:
         with:
             artifacts: "release-repo/billing.exe"
             tag: v0.0.${{ github.run_number }}
-            token: ${{secrets.TOKEN}}
+            token: ${{secrets.WORKFLOW_RELEASE_TOKEN}}
             commit: main
             replacesArtifacts: false
             allowUpdates: true
+        env:
+            GITHUB_TOKEN: ${{ secrets.WORKFLOW_RELEASE_TOKEN }}

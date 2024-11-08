@@ -25,7 +25,11 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
             channel: stable
-            flutter-version: 3.22.3
+            flutter-version: 3.24.3
+
+      - name: List files in current directory
+        run: ls -R
+
 
       # Step 3: Install dependencies
       - name: Install dependencies

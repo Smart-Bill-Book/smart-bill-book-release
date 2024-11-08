@@ -82,7 +82,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.WORKFLOW_RELEASE_TOKEN }}
 
       - name: Build Flutter EXE
-        run: flutter build windows --release --dart-define-from-file flavors/production.json
+        run: flutter build apk --release --dart-define-from-file flavors/smart_store/production.json
         working-directory: private-repo
 
       - name: Archive Artifacts

@@ -26,6 +26,7 @@ jobs:
         with:
             channel: stable
             flutter-version: 3.24.3
+            working-directory: private-repo
       - name: Checkout the code
         uses: actions/checkout@v2
       - name: Set up Java
@@ -33,10 +34,6 @@ jobs:
         with:
           java-version: 17
           distribution: "temurin"
-
-      - name: List files in current directory
-        run: ls -R
-
 
       # Step 3: Install dependencies
       - name: Install dependencies

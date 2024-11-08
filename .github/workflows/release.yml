@@ -94,8 +94,6 @@ jobs:
 
     #   - name: Copy Windows Build Zip to release repository
     #     run: cp private-repo/build/windows/x64/runner/Release/Smart-Store-Billing-Software-windows.zip release-repo/
-      - name: List all files recursively
-        run: dir /s
 
       - name: Compile .ISS to .EXE Installer
         uses: Minionguyjpro/Inno-Setup-Action@v1.2.2

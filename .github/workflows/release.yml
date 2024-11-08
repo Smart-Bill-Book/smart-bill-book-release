@@ -102,7 +102,7 @@ jobs:
             options: /O+
 
       - name: Copy Windows Build Zip to release repository
-        run: cp private-repo/exe_generator/Output/billing.exe release-repo/
+        run: cp private-repo\exe_generator\Output\billing.exe release-repo\
 
       - name: Push Windows EXE to releases
         uses: ncipollo/release-action@v1

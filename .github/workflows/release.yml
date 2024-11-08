@@ -15,7 +15,7 @@ jobs:
       - name: Check out private repository
         uses: actions/checkout@v3
         with:
-          repository: https://github.com/Smart-Bill-Book/smart-bill-book.git
+          repository: Smart-Bill-Book/smart-bill-book
           token: ${{ secrets.RELEASE_TOKEN }}
           path: private-repo
 
@@ -44,7 +44,7 @@ jobs:
       - name: Check out release repository
         uses: actions/checkout@v3
         with:
-          repository: https://github.com/Smart-Bill-Book/smart-bill-book-release.git
+          repository: Smart-Bill-Book/smart-bill-book-release
           token: ${{ secrets.RELEASE_TOKEN }}
           path: release-repo
 

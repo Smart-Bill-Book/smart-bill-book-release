@@ -1,7 +1,10 @@
 name: Flutter Release
 
 on:
-  workflow_dispatch:  # Allows manual triggering of the workflow
+    push:
+        branches:
+        - main  # Trigger on push to main branch, adjust as needed
+    workflow_dispatch:  # Allows manual triggering of the workflow
 
 jobs:
   build-and-release:

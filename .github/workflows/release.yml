@@ -17,7 +17,7 @@ jobs:
         with:
           repository: Smart-Bill-Book/smart-bill-book
           ref: main
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.RELEASE_TOKEN }}
           path: private-repo
 
       # Step 2: Set up Flutter environment

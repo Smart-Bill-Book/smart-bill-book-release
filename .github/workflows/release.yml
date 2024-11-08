@@ -15,7 +15,8 @@ jobs:
       - name: Check out private repository
         uses: actions/checkout@v3
         with:
-          repository: Smart-Bill-Book/smart-bill-book
+          repository: ${{ secrets.PRIVATE_REPO_URL }}
+          ref: main
           token: ${{ secrets.GITHUB_TOKEN }}
           path: private-repo
 

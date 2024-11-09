@@ -104,8 +104,10 @@ jobs:
       - name: Copy Windows Build Zip to release repository
         shell: pwsh
         run: |
-          $source = Join-Path -Path $env:GITHUB_WORKSPACE -ChildPath "private-repo/exe_generator/Output/billing.exe"
-          $destination = Join-Path -Path $env:GITHUB_WORKSPACE -ChildPath "release-repo"
+          $source = Join-Path -Path "${{ github.workspace }}" -ChildPath "private-repo/exe_generator/Output/billing.exe"
+          $destination = Join-Path -Path "${{ github.workspace }}" -ChildPath "release-repo/"
+          Write-Host "Source Path: $source"
+          Write-Host "Destination Path: $destination"
           Copy-Item -Path $source -Destination $destination
 
       - name: Push Windows EXE to releases

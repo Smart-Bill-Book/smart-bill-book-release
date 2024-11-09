@@ -105,7 +105,7 @@ jobs:
         shell: pwsh
         run: |
           $source = Join-Path -Path "${{ github.workspace }}" -ChildPath "private-repo/exe_generator/Output/billing.exe"
-          $destination = Join-Path -Path "${{ github.workspace }}" -ChildPath "release-repo/"
+          $destination = Join-Path -Path "${{ github.workspace }}" -ChildPath "/"
           Write-Host "Source Path: $source"
           Write-Host "Destination Path: $destination"
           Copy-Item -Path $source -Destination $destination

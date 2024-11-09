@@ -113,7 +113,7 @@ jobs:
       - name: Push Windows EXE to releases
         uses: ncipollo/release-action@v1
         with:
-            artifacts: "release-repo/billing.exe"
+            artifacts: "billing.exe"
             tag: v0.0.${{ github.run_number }}
             token: ${{secrets.WORKFLOW_RELEASE_TOKEN}}
             commit: main

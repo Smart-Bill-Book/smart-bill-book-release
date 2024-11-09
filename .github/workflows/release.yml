@@ -102,7 +102,11 @@ jobs:
             options: /O+
 
       - name: Copy Windows Build Zip to release repository
-        run: cp private-repo\exe_generator\Output\billing.exe release-repo\
+        shell: pwsh
+        run: |
+          $source = Join-Path -Path $env:GITHUB_WORKSPACE -ChildPath "private-repo/exe_generator/Output/billing.exe"
+          $destination = Join-Path -Path $env:GITHUB_WORKSPACE -ChildPath "release-repo"
+          Copy-Item -Path $source -Destination $destination
 
       - name: Push Windows EXE to releases
         uses: ncipollo/release-action@v1

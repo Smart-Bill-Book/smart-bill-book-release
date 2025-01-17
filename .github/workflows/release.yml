@@ -3,7 +3,7 @@ name: Flutter Release
 on:
     push:
         branches:
-        - db-migration  # Trigger on push to main branch, adjust as needed
+        - main  # Trigger on push to main branch, adjust as needed
     workflow_dispatch:  # Allows manual triggering of the workflow
 
 jobs:
@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: Smart-Bill-Book/smart-bill-book
-          ref: db-migration
+          ref: development
           token: ${{ secrets.RELEASE_TOKEN }}
           path: private-repo
 

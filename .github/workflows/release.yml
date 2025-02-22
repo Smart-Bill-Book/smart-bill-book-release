@@ -85,8 +85,8 @@ jobs:
         run: flutter build windows --release --dart-define-from-file flavors/smart_store/production.json
         working-directory: private-repo
 
-      - name: Copy SQLITE File to windows build folder
-        run: cp private-repo/pipeline_configs/sqlite3.dll private-repo/build/windows/x64/runner/Release
+      # - name: Copy SQLITE File to windows build folder
+      #   run: cp private-repo/pipeline_configs/sqlite3.dll private-repo/build/windows/x64/runner/Release
 
       - name: Compile .ISS to .EXE Installer
         uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
@@ -94,14 +94,14 @@ jobs:
             path: private-repo/exe_generator/smart-store.iss
             options: /O+
 
-      # - name: Copy Windows Build Zip to release repository
-      #   shell: pwsh
-      #   run: |
-      #     $source = Join-Path -Path "${{ github.workspace }}" -ChildPath "private-repo/exe_generator/Output/billing.exe"
-      #     $destination = Join-Path -Path "${{ github.workspace }}" -ChildPath "/"
-      #     Write-Host "Source Path: $source"
-      #     Write-Host "Destination Path: $destination"
-      #     Copy-Item -Path $source -Destination $destination
+      - name: Copy Windows Build Zip to release repository
+        shell: pwsh
+        run: |
+          $source = Join-Path -Path "${{ github.workspace }}" -ChildPath "private-repo/exe_generator/Output/billing.exe"
+          $destination = Join-Path -Path "${{ github.workspace }}" -ChildPath "/"
+          Write-Host "Source Path: $source"
+          Write-Host "Destination Path: $destination"
+          Copy-Item -Path $source -Destination $destination
 
       - name: Push Windows EXE to releases
         uses: ncipollo/release-action@v1

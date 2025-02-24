@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: Smart-Bill-Book/smart-bill-book
-          ref: main
+          ref: 50
           token: ${{ secrets.RELEASE_TOKEN }}
           path: private-repo
 
@@ -85,8 +85,8 @@ jobs:
         run: flutter build windows --release --dart-define-from-file flavors/smart_store/production.json
         working-directory: private-repo
 
-      # - name: Copy SQLITE File to windows build folder
-      #   run: cp private-repo/pipeline_configs/sqlite3.dll private-repo/build/windows/x64/runner/Release
+      - name: Copy SQLITE File to windows build folder
+        run: cp private-repo/pipeline_configs/sqlite3.dll private-repo/build/windows/x64/runner/Release
 
       - name: Compile .ISS to .EXE Installer
         uses: Minionguyjpro/Inno-Setup-Action@v1.2.2

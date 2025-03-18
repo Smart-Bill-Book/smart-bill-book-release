@@ -90,6 +90,7 @@ jobs:
 
       - name: Creating a msix
         run: dart run msix:create --store
+        working-directory: private-repo
 
       - name: Compile .ISS to .EXE Installer
         uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
@@ -127,7 +128,7 @@ jobs:
         env:
             GITHUB_TOKEN: ${{ secrets.WORKFLOW_RELEASE_TOKEN }}
             
-      - name: Push Windows EXE to releases
+      - name: Push Windows MSIX to releases
         uses: ncipollo/release-action@v1
         with:
             artifacts: "smart_billing.msix"

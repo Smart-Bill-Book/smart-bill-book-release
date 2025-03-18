@@ -89,7 +89,7 @@ jobs:
         run: cp private-repo/pipeline_configs/sqlite3.dll private-repo/build/windows/x64/runner/Release
 
       - name: Creating a msix
-        run: dart run msix:create --store
+        run: dart run msix:create
         working-directory: private-repo
 
       - name: Compile .ISS to .EXE Installer

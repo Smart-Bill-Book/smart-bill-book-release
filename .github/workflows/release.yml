@@ -137,5 +137,6 @@ jobs:
             commit: main
             replacesArtifacts: false
             allowUpdates: true
+            prerelease: true
         env:
             GITHUB_TOKEN: ${{ secrets.WORKFLOW_RELEASE_TOKEN }}

@@ -25,7 +25,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
             channel: stable
-            flutter-version: 3.27.0
+            flutter-version: 3.29.0
             working-directory: private-repo
 
       - name: Set up Java
@@ -45,6 +45,21 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
         working-directory: private-repo
+
+      - name: Get version from pubspec.yaml
+        shell: pwsh
+        run: |
+          $pubspecContent = Get-Content "private-repo/pubspec.yaml" -Raw
+          $versionMatch = [regex]::Match($pubspecContent, 'version:\s*(\d+\.\d+\.\d+)\+(\d+)')
+          if ($versionMatch.Success) {
+              $version = $versionMatch.Groups[1].Value
+              echo "APP_VERSION=$version" >> $env:GITHUB_ENV
+              Write-Host "Extracted version: $version"
+          } else {
+              Write-Host "Failed to extract version from pubspec.yaml"
+              exit 1
+          }
+    
 
       # Step 3.5: Running Build Runner
       - name: Dart Build Runner
@@ -88,10 +103,6 @@ jobs:
       - name: Copy SQLITE File to windows build folder
         run: cp private-repo/pipeline_configs/sqlite3.dll private-repo/build/windows/x64/runner/Release
 
-      - name: Creating a msix
-        run: dart run msix:create
-        working-directory: private-repo
-
       - name: Compile .ISS to .EXE Installer
         uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
         with:
@@ -106,37 +117,15 @@ jobs:
           Write-Host "Source Path: $source"
           Write-Host "Destination Path: $destination"
           Copy-Item -Path $source -Destination $destination
-    
-      - name: Copy Windows MSIX Zip to release repository
-        shell: pwsh
-        run: |
-          $source = Join-Path -Path "${{ github.workspace }}" -ChildPath "private-repo/build/windows/x64/runner/Release/smart_billing.msix"
-          $destination = Join-Path -Path "${{ github.workspace }}" -ChildPath "/"
-          Write-Host "Source Path: $source"
-          Write-Host "Destination Path: $destination"
-          Copy-Item -Path $source -Destination $destination
-
+          
       - name: Push Windows EXE to releases
         uses: ncipollo/release-action@v1
         with:
             artifacts: "billing.exe"
-            tag: v0.0.${{ github.run_number }}
+            tag: v${{ env.APP_VERSION }}
             token: ${{secrets.WORKFLOW_RELEASE_TOKEN}}
             commit: main
             replacesArtifacts: false
             allowUpdates: true
-        env:
-            GITHUB_TOKEN: ${{ secrets.WORKFLOW_RELEASE_TOKEN }}
-            
-      - name: Push Windows MSIX to releases
-        uses: ncipollo/release-action@v1
-        with:
-            artifacts: "smart_billing.msix"
-            tag: v0.0.${{ github.run_number }}
-            token: ${{secrets.WORKFLOW_RELEASE_TOKEN}}
-            commit: main
-            replacesArtifacts: false
-            allowUpdates: true
-            prerelease: true
         env:
             GITHUB_TOKEN: ${{ secrets.WORKFLOW_RELEASE_TOKEN }}

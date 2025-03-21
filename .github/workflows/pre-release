@@ -1,0 +1,133 @@
+name: Flutter Release
+
+on:
+    push:
+        branches:
+        - main  # Trigger on push to main branch, adjust as needed
+    workflow_dispatch:  # Allows manual triggering of the workflow
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+
+    steps:
+      # Step 1: Check out the private repository code
+      - name: Check out private repository
+        uses: actions/checkout@v3
+        with:
+          repository: Smart-Bill-Book/smart-bill-book
+          ref: 58
+          token: ${{ secrets.RELEASE_TOKEN }}
+          path: private-repo
+
+      # Step 2: Set up Flutter environment
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+            channel: stable
+            flutter-version: 3.29.0
+            working-directory: private-repo
+
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: 17
+          distribution: "temurin"
+
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: 17
+          distribution: "temurin"
+
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: flutter pub get
+        working-directory: private-repo
+
+      - name: Get version from pubspec.yaml
+        shell: pwsh
+        run: |
+          $pubspecContent = Get-Content "private-repo/pubspec.yaml" -Raw
+          $versionMatch = [regex]::Match($pubspecContent, 'version:\s*(\d+\.\d+\.\d+)\+(\d+)')
+          if ($versionMatch.Success) {
+              $versionNumber = $versionMatch.Groups[1].Value
+              $version = "$versionNumber-pre"
+              echo "APP_VERSION=$version" >> $env:GITHUB_ENV
+              Write-Host "Extracted version: $version"
+          } else {
+              Write-Host "Failed to extract version from pubspec.yaml"
+              exit 1
+          }
+    
+
+      # Step 3.5: Running Build Runner
+      - name: Dart Build Runner
+        run: dart pub run build_runner build --delete-conflicting-outputs
+        working-directory: private-repo
+
+      # Step 4: Build APK artifacts
+      # - name: Build Flutter APK
+      #   run: flutter build apk --release --dart-define-from-file flavors/smart_store/production.json
+      #   working-directory: private-repo
+
+      # # Step 5: Check out the release repository
+      # - name: Check out release repository
+      #   uses: actions/checkout@v3
+      #   with:
+      #     repository: Smart-Bill-Book/smart-bill-book-release
+      #     token: ${{ secrets.RELEASE_TOKEN }}
+      #     path: release-repo
+
+      # # Step 6: Copy build artifacts to release repository
+      # - name: Copy APK to release repository
+      #   run: cp private-repo/build/app/outputs/flutter-apk/app-release.apk release-repo/
+
+      # # Step 7: Create a new release in the release repository
+      # - name: Push APK to releases
+      #   uses: ncipollo/release-action@v1
+      #   with:
+      #       artifacts: "release-repo/app-release.apk"
+      #       tag: v0.0.${{ github.run_number }}
+      #       token: ${{secrets.WORKFLOW_RELEASE_TOKEN}}
+      #       commit: main
+      #       replacesArtifacts: false
+      #       allowUpdates: true
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.WORKFLOW_RELEASE_TOKEN }}
+
+      - name: Build Flutter EXE
+        run: flutter build windows --release --dart-define-from-file flavors/smart_store/production.json
+        working-directory: private-repo
+
+      - name: Copy SQLITE File to windows build folder
+        run: cp private-repo/pipeline_configs/sqlite3.dll private-repo/build/windows/x64/runner/Release
+
+      - name: Compile .ISS to .EXE Installer
+        uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
+        with:
+            path: private-repo/exe_generator/smart-store.iss
+            options: /O+
+
+      - name: Copy Windows Build Zip to release repository
+        shell: pwsh
+        run: |
+          $source = Join-Path -Path "${{ github.workspace }}" -ChildPath "private-repo/exe_generator/Output/smart-bill-book.exe"
+          $destination = Join-Path -Path "${{ github.workspace }}" -ChildPath "/"
+          Write-Host "Source Path: $source"
+          Write-Host "Destination Path: $destination"
+          Copy-Item -Path $source -Destination $destination
+          
+      - name: Push Windows EXE to releases
+        uses: ncipollo/release-action@v1
+        with:
+            artifacts: "smart-bill-book.exe"
+            tag: v${{ env.APP_VERSION }}
+            token: ${{secrets.WORKFLOW_RELEASE_TOKEN}}
+            commit: main
+            replacesArtifacts: false
+            allowUpdates: true
+            prerelease: true
+        env:
+            GITHUB_TOKEN: ${{ secrets.WORKFLOW_RELEASE_TOKEN }}

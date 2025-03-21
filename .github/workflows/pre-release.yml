@@ -65,26 +65,30 @@ jobs:
               Write-Host "Failed to extract version from pubspec.yaml"
               exit 1
           }
-
+      # Updated step: Extract release notes from CHANGELOG-pre.md
       - name: Extract release notes
         shell: pwsh
         run: |
           $changelogContent = Get-Content "private-repo/CHANGELOG-pre.md" -Raw
           $version = $env:APP_VERSION
-
+          $buildNumber = $env:GITHUB_RUN_NUMBER
+          
+          # Create the full version string with build number
+          $fullVersion = "$version+$buildNumber"
+          
           # Extract content between version headers
-          $pattern = "## \[$version\].*?\n(.*?)(?=\n## \[|$)"
+          $pattern = "## \[$fullVersion\].*?\n(.*?)(?=\n## \[|$)"
           $releaseNotes = [regex]::Match($changelogContent, $pattern, [System.Text.RegularExpressions.RegexOptions]::Singleline)
-
+          
           if ($releaseNotes.Success) {
               $notes = $releaseNotes.Groups[1].Value.Trim()
               echo "RELEASE_NOTES<<EOF" >> $env:GITHUB_ENV
               echo "$notes" >> $env:GITHUB_ENV
               echo "EOF" >> $env:GITHUB_ENV
-              Write-Host "Extracted release notes for version $version"
+              Write-Host "Extracted release notes for version $fullVersion"
           } else {
-              Write-Host "No release notes found for version $version"
-              echo "RELEASE_NOTES=No release notes available for this version." >> $env:GITHUB_ENV
+              Write-Host "No release notes found for version $fullVersion"
+              echo "RELEASE_NOTES=Bug Fixes and Improvements." >> $env:GITHUB_ENV
           }
     
 

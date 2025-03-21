@@ -1,4 +1,4 @@
-name: Flutter Release
+name: Smart Bill Book Release
 
 on:
     push:
@@ -58,6 +58,27 @@ jobs:
           } else {
               Write-Host "Failed to extract version from pubspec.yaml"
               exit 1
+          }
+          
+      - name: Extract release notes
+        shell: pwsh
+        run: |
+          $changelogContent = Get-Content "private-repo/CHANGELOG.md" -Raw
+          $version = $env:APP_VERSION
+
+          # Extract content between version headers
+          $pattern = "## \[$version\].*?\n(.*?)(?=\n## \[|$)"
+          $releaseNotes = [regex]::Match($changelogContent, $pattern, [System.Text.RegularExpressions.RegexOptions]::Singleline)
+
+          if ($releaseNotes.Success) {
+              $notes = $releaseNotes.Groups[1].Value.Trim()
+              echo "RELEASE_NOTES<<EOF" >> $env:GITHUB_ENV
+              echo "$notes" >> $env:GITHUB_ENV
+              echo "EOF" >> $env:GITHUB_ENV
+              Write-Host "Extracted release notes for version $version"
+          } else {
+              Write-Host "No release notes found for version $version"
+              echo "RELEASE_NOTES=No release notes available for this version." >> $env:GITHUB_ENV
           }
     
 
@@ -127,5 +148,6 @@ jobs:
             commit: main
             replacesArtifacts: false
             allowUpdates: true
+            body: ${{ env.RELEASE_NOTES }}
         env:
             GITHUB_TOKEN: ${{ secrets.WORKFLOW_RELEASE_TOKEN }}

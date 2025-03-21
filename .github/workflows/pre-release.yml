@@ -28,17 +28,11 @@ jobs:
             flutter-version: 3.29.0
             working-directory: private-repo
 
-      - name: Set up Java
-        uses: actions/setup-java@v2
-        with:
-          java-version: 17
-          distribution: "temurin"
-
-      - name: Set up Java
-        uses: actions/setup-java@v2
-        with:
-          java-version: 17
-          distribution: "temurin"
+      # - name: Set up Java
+      #   uses: actions/setup-java@v2
+      #   with:
+      #     java-version: 17
+      #     distribution: "temurin"
 
 
       # Step 3: Install dependencies
@@ -53,8 +47,19 @@ jobs:
           $versionMatch = [regex]::Match($pubspecContent, 'version:\s*(\d+\.\d+\.\d+)\+(\d+)')
           if ($versionMatch.Success) {
               $versionNumber = $versionMatch.Groups[1].Value
+              $buildNumber = $versionMatch.Groups[2].Value
               $version = "$versionNumber-pre"
               echo "APP_VERSION=$version" >> $env:GITHUB_ENV
+              
+              # Update pubspec.yaml with pre-release version
+              $newPubspecContent = $pubspecContent -replace 'version:\s*\d+\.\d+\.\d+\+\d+', "version: $version+$buildNumber"
+              Set-Content -Path "private-repo/pubspec.yaml" -Value $newPubspecContent
+
+              # Update smart-store.iss with pre-release version
+              $issContent = Get-Content "private-repo/exe_generator/smart-store.iss" -Raw
+              $newIssContent = $issContent -replace '#define MyAppVersion.*', "#define MyAppVersion `"$version`""
+              Set-Content -Path "private-repo/exe_generator/smart-store.iss" -Value $newIssContent
+
               Write-Host "Extracted version: $version"
           } else {
               Write-Host "Failed to extract version from pubspec.yaml"

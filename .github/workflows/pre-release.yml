@@ -128,7 +128,7 @@ jobs:
       #     GITHUB_TOKEN: ${{ secrets.WORKFLOW_RELEASE_TOKEN }}
 
       - name: Build Flutter EXE
-        run: flutter build windows --release --dart-define-from-file flavors/smart_store/production.json
+        run: flutter build windows --release --dart-define-from-file flavors/smart_store/pre-production.json
         working-directory: private-repo
 
       - name: Copy SQLITE File to windows build folder

@@ -134,11 +134,21 @@ jobs:
       - name: Copy SQLITE File to windows build folder
         run: cp private-repo/pipeline_configs/sqlite3.dll private-repo/build/windows/x64/runner/Release
 
-      - name: Compile .ISS to .EXE Installer
-        uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
-        with:
-            path: private-repo/exe_generator/smart-store.iss
-            options: /O+
+      - name: Install Inno Setup
+        run: |
+            choco install innosetup
+        shell: powershell
+        
+      - name: Compile Setup
+        run: |
+            "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" "private-repo/exe_generator/smart-store.iss"
+        shell: cmd
+
+      # - name: Compile .ISS to .EXE Installer
+      #   uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
+      #   with:
+      #       path: private-repo/exe_generator/smart-store.iss
+      #       options: /O+
 
       - name: Copy Windows Build Zip to release repository
         shell: pwsh

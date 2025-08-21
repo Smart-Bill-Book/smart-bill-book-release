@@ -28,6 +28,12 @@ jobs:
             flutter-version: 3.32.0
             working-directory: private-repo
 
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: 17
+          distribution: "temurin"
+
       # - name: Set up Java
       #   uses: actions/setup-java@v2
       #   with:

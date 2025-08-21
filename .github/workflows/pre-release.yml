@@ -172,3 +172,31 @@ jobs:
             body: ${{ env.RELEASE_NOTES }}
         env:
             GITHUB_TOKEN: ${{ secrets.WORKFLOW_RELEASE_TOKEN }}
+    
+      - name: Build Flutter APK
+        run: flutter build apk --release --dart-define-from-file flavors/smart_store/pre-production.json
+        working-directory: private-repo
+
+      - name: Copy APK to release repository
+        shell: pwsh
+        run: |
+          $source = Join-Path -Path "${{ github.workspace }}" -ChildPath "private-repo/build/app/outputs/flutter-apk/app-release.apk"
+          $destination = Join-Path -Path "${{ github.workspace }}" -ChildPath "/"
+          Write-Host "Source Path: $source"
+          Write-Host "Destination Path: $destination"
+          Copy-Item -Path $source -Destination $destination
+          
+      - name: Push APK to releases
+        uses: ncipollo/release-action@v1
+        with:
+            artifacts: "app-release.apk"
+            tag: v${{ env.APP_VERSION }}
+            token: ${{secrets.WORKFLOW_RELEASE_TOKEN}}
+            commit: main
+            replacesArtifacts: false
+            allowUpdates: true
+            prerelease: true
+            body: ${{ env.RELEASE_NOTES }}
+        env:
+            GITHUB_TOKEN: ${{ secrets.WORKFLOW_RELEASE_TOKEN }}
+    

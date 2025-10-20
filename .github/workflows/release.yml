@@ -1,9 +1,6 @@
 name: Smart Bill Book Release
 
 on:
-    push:
-        branches:
-        - main  # Trigger on push to main branch, adjust as needed
     workflow_dispatch:  # Allows manual triggering of the workflow
 
 jobs:

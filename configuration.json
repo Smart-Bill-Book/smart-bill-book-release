@@ -17,14 +17,14 @@
   "prod": {
     "maintenance": false,
     "android": {
-      "version": "1.5.3",
+      "version": "1.4.3",
       "build_number": "567",
       "release_notes": null,
       "url": "https://play.google.com/store/apps/details?id=com.smartbillbook.app&hl=en_IN",
       "is_force_update": true
     },
     "windows": {
-      "version": "1.5.3",
+      "version": "1.4.3",
       "build_number": "567",
       "release_notes": "Major Bug Fixes and improvements Windows",
       "url": "https://apps.microsoft.com/detail/9pkxj10brmpk",

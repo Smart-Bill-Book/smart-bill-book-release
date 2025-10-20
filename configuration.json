@@ -1,5 +1,6 @@
 {
   "pre": {
+    "maintenance": true,
     "android": {
       "version": "1.4.3",
       "build_number": "567",
@@ -14,6 +15,7 @@
     }
   },
   "prod": {
+    "maintenance": true,
     "android": {
       "version": "1.4.3",
       "build_number": "567",

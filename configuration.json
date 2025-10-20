@@ -19,14 +19,14 @@
     "android": {
       "version": "1.4.31",
       "build_number": "567",
-      "release_notes": "Bug Fixes and improvements",
+      "release_notes": "Major Bug Fixes and improvements Android",
       "url": "https://play.google.com/store/apps/details?id=com.smartbillbook.app&hl=en_IN",
       "is_force_update": false
     },
     "windows": {
       "version": "1.4.31",
       "build_number": "567",
-      "release_notes": "Bug Fixes and improvements",
+      "release_notes": "Major Bug Fixes and improvements Windows",
       "url": "https://apps.microsoft.com/detail/9pkxj10brmpk",
       "is_force_update": false
     }

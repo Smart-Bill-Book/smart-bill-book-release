@@ -15,7 +15,7 @@
     }
   },
   "prod": {
-    "maintenance": true,
+    "maintenance": false,
     "android": {
       "version": "1.5.3",
       "build_number": "567",

@@ -23,7 +23,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
             channel: stable
-            flutter-version: 3.44.0
+            flutter-version: 3.35.1
             working-directory: private-repo
 
       - name: Set up Java
@@ -132,7 +132,7 @@ jobs:
       #     GITHUB_TOKEN: ${{ secrets.WORKFLOW_RELEASE_TOKEN }}
 
       - name: Build Flutter EXE
-        run: flutter build windows --release --dart-define-from-file flavors/smart_store/pre-production.json
+        run: flutter build windows --release --verbose --dart-define-from-file flavors/smart_store/pre-production.json
         working-directory: private-repo
 
       - name: Copy SQLITE File to windows build folder
@@ -178,7 +178,7 @@ jobs:
             GITHUB_TOKEN: ${{ secrets.WORKFLOW_RELEASE_TOKEN }}
     
       - name: Build Flutter APK
-        run: flutter build apk --release --dart-define-from-file flavors/smart_store/pre-production.json
+        run: flutter build apk --release --verbose --dart-define-from-file flavors/smart_store/pre-production.json
         working-directory: private-repo
 
       - name: Copy APK to release repository

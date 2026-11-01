@@ -39,6 +39,12 @@ jobs:
       #     distribution: "temurin"
 
 
+      # Step 2.5: Configure Git for private dependencies
+      - name: Configure Git for private dependencies
+        run: |
+          git config --global url."https://x-access-token:${{ secrets.RELEASE_TOKEN }}@github.com/".insteadOf "https://github.com/"
+          git config --global --add url."https://x-access-token:${{ secrets.RELEASE_TOKEN }}@github.com/".insteadOf "git@github.com:"
+
       # Step 3: Install dependencies
       - name: Install dependencies
         run: flutter pub get
